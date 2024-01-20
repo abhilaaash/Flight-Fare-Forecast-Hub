@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Price Prediction</title>
+
+
+
+    <!-- css -->
+    <link rel="stylesheet" href="static/css/styles.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-TpNbLz3mHAAbBA0UEZLl4FQJfxtch5V9UpblN5c2LgE2uOlt3K1uUKKMOE6AkD7" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+
+
+
+<body>
+    <div class="container">
+        <div class="dashboard-statement">
+            <h1>Flight Price Prediction</h1>
+        </div>
+
+        <form action="/predict" method="post">
+
+            <!-- Date of Departure -->
+            <div class="card">
+                <label for="Dep_Time">Date of Departure:</label>
+                <input type="datetime-local" name="Dep_Time" id="Dep_Time" required>
+            </div>
+
+            <!-- Date of Arrival -->
+            <div class="card">
+                <label for="Arrival_Time">Date of Arrival:</label>
+                <input type="datetime-local" name="Arrival_Time" id="Arrival_Time" required>
+            </div>
+
+            <!-- Travelling from (Source) -->
+            <div class="card">
+                <label for="Source">Travelling from (Source):</label>
+                <select name="Source" id="Source" required>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Kolkata">Kolkata</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Chennai">Chennai</option>
+                </select>
+            </div>
+
+            <!-- Travelling To (Destination) -->
+            <div class="card">
+                <label for="Destination">Travelling To (Destination):</label>
+                <select name="Destination" id="Destination" required>
+                    <option value="Cochin">Cochin</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Kolkata">Kolkata</option>
+                </select>
+            </div>
+
+            <!-- No. of Stops -->
+            <div class="card">
+                <label for="stops">No. of Stops:</label>
+                <select name="stops" required>
+                    <option value="0">Non-Stop</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <!-- Preferred Airline -->
+            <div class="card">
+                <label for="airline">Preferred Airline:</label>
+                <select name="airline" id="airline" required>
+                    <option value="Jet Airways">Jet Airways</option>
+                    <option value="IndiGo">IndiGo</option>
+                    <option value="Air India">Air India</option>
+                    <option value="Multiple carriers">Multiple carriers</option>
+                    <option value="SpiceJet">SpiceJet</option>
+                    <option value="Vistara">Vistara</option>
+                    <option value="Air Asia">Air Asia</option>
+                    <option value="GoAir">GoAir</option>
+                    <option value="Multiple carriers Premium economy">Multiple carriers Premium economy</option>
+                    <option value="Jet Airways Business">Jet Airways Business</option>
+                    <option value="Vistara Premium economy">Vistara Premium economy</option>
+                    <option value="Trujet">Trujet</option>
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="card">
+                <input type="submit" value="Predict Price">
+            </div>
+
+        </form>
+        <br>
+        <br>
+        <div class="card">
+            {% if predictions %}
+            <h3>Predictions for Each Model:</h3>
+
+            {% for model, prediction in predictions.items() %}
+            <strong>{{ model }}:</strong> Rs. {{ prediction }}
+            <br>
+            {% endfor %}
+        </div>
+        <br><br>
+
+        <!-- Pie Chart Container -->
+        <div class="chart-container">
+            <canvas id="pieChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Bar Chart Container -->
+        <div class="chart-container">
+            <canvas id="barChart" width="400" height="200"></canvas>
+        </div>
+
+        <br><br>
+        <div class="card">
+            <h3>Basic Statistics for Predictions</h3>
+            {% if predictions %}
+
+            {% set prices = [] %}
+            {% for model, prediction in predictions.items() %}
+            {% set price_float = prediction|float %}
+
+            {% set _ = prices.append(price_float) %}
+            {% endfor %}
+            <strong>Average Price:</strong> Rs. {{ prices|sum / prices|length }} <br>
+            <strong>Maximum Price:</strong> Rs. {{ prices|max }} <br>
+            <strong>Minimum Price:</strong> Rs. {{ prices|min }} <br>
+            {% else %}
+            <p>No predictions available.</p>
+            {% endif %}
+        </div>
+
+        {% endif %}
+    </div>
+
+    <!-- Add JavaScript to create the chart -->
+    <script>
+        // Get the predictions data for the charts
+        var predictionLabels = Object.keys({{ predictions| tojson }});
+        var predictionValues = Object.values({{ predictions| tojson }});
+
+        // Create a Pie Chart
+        var pieChartCtx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(pieChartCtx, {
+            type: 'pie',
+            data: {
+                labels: predictionLabels,
+                datasets: [{
+                    data: predictionValues,
+                    backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#34495e', '#1abc9c', '#d35400', '#7f8c8d'],
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Prediction Distribution (Pie Chart)'
+                }
+            }
+        });
+
+        // Create a Bar Chart
+        var barChartCtx = document.getElementById('barChart').getContext('2d');
+        var barChart = new Chart(barChartCtx, {
+            type: 'bar',
+            data: {
+                labels: predictionLabels,
+                datasets: [{
+                    label: 'Predictions',
+                    data: predictionValues,
+                    backgroundColor: '#3498db',
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Prediction Values (Bar Chart)',
+                    font: {
+                        color: 'white' // Set the title text color
+                    }
+                }, legend: {
+                    labels: {
+                        fontColor: 'gold', // Set the legend labels color
+                        color: 'gold' // Set the legend labels color (added for compatibility)
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+    <p> Abhilash@AI</p>
+</body>
+
+</html>

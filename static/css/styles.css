@@ -1,0 +1,131 @@
+body {
+    background-color: #AAE6FF;
+    text-align: center;
+}
+
+.navbar {
+    background-color: #2E75B6;
+}
+
+a {
+    color: #f1f9f9;
+}
+
+a:hover {
+    color: #f0f0f0;
+}
+
+body {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin: auto;
+    padding: auto;
+    background-color: #6d0505;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 14px;
+    color: silver;
+    text-align: center;
+}
+
+.container {
+    max-width: 8000px;
+    /* Adjust the maximum width of the container */
+    margin: 0 auto;
+}
+
+.card {
+    border: 2px solid #db3434f8;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px;
+    width: 35%;
+    background-color: yellow;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    /* Two cards per row, adjust the width as needed */
+    display: inline-block;
+    box-sizing: border-box;
+    vertical-align: top;
+    /* Align cards to the top of the row */
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+input[type="submit"]:hover {
+    background-color: #217dbb;
+}
+
+.dashboard-statement {
+    background-color: #053c6d;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Additional styles for the Prediction Chart */
+.card-header {
+    background-color: #3498db;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px 5px 0 0;
+}
+
+.card-body {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chart-container {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#pieChart,
+#barChart {
+    width: 100%;
+    /* Make the canvas fill the container */
+    height: auto;
+    /* Maintain the aspect ratio */
+    color: white;
+    /* Set text color to white */
+    display: block;
+    margin: 0 auto;
+    /* Center the canvas horizontally */
+}
